@@ -1,5 +1,5 @@
 #include <xc.h>
-#include <p18f4520.h>
+#include <pic18f4520.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,8 +7,8 @@
 #include "conbits.h"
 #include "uart_layer.h"
 
-void interrupt high_isr(void);
-void interrupt low_priority low_isr(void);
+void __interrupt() high_isr(void);
+void __interrupt(low_priority) low_isr(void);
 
 uint8_t print_buffer[256] = {0}; // buffer to print stuff to serial
 
@@ -74,7 +74,7 @@ void main(void){
 
 
 
-void interrupt high_isr(void){
+void __interrupt() high_isr(void){
     INTCONbits.GIEH = 0;
     if(PIR2bits.CCP2IF == 1){
         
@@ -83,7 +83,7 @@ void interrupt high_isr(void){
     INTCONbits.GIEH = 1;
 }
 
-void interrupt low_priority low_isr(void){
+void __interrupt(low_priority) low_isr(void){
     INTCONbits.GIEH = 0;
     if(PIR2bits.TMR3IF == 1){
         
